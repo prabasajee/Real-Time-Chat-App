@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real-Time Chat App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 Real-Time Chat</h1>
+
+    <div id="auth-section">
+      <button id="loginBtn">Sign In with Google</button>
+      <button id="logoutBtn" style="display: none;">Sign Out</button>
+    </div>
+
+    <div id="chat-section" style="display: none;">
+      <div id="chat-box"></div>
+
+      <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type a message..." required />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js"></script>
+
+  <script src="firebase.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
