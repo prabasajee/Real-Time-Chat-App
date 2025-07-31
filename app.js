@@ -88,16 +88,22 @@ class ChatApp {
   
   async signOut() {
     try {
-      if (window.firebaseAuth && window.firebaseAuth.signOut) {
+      if (window.firebaseAuth && window.firebaseAuth.signOut && typeof firebase !== 'undefined') {
         await window.firebaseAuth.signOut();
       } else {
-        // Demo mode fallback
+        // Demo mode fallback - manually trigger sign out
         this.currentUser = null;
         this.handleAuthStateChange(null);
       }
     } catch (error) {
       console.error('Sign out error:', error);
-      this.showError('Failed to sign out. Please try again.');
+      // In demo mode, force sign out
+      if (error.message.includes('Firebase not properly configured')) {
+        this.currentUser = null;
+        this.handleAuthStateChange(null);
+      } else {
+        this.showError('Failed to sign out. Please try again.');
+      }
     }
   }
   
