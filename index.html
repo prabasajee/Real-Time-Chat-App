@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatFlow - Real-Time Messaging</title>
+    <!-- Styles omitted for brevity, you can paste your previous CSS here -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar" onclick="openProfileModal()">JD</div>
+                    <div class="user-details">
+                        <h3>John Doe</h3>
+                        <p>Online</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="openAddContactModal()" title="Add Contact">
+                        <span>+</span>
+                    </button>
+                    <button class="icon-btn" onclick="openSettingsModal()" title="Settings">
+                        <span>⚙</span>
+                    </button>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search contacts..." id="searchInput">
+            </div>
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be populated here -->
+            </div>
+        </div>
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <button class="icon-btn mobile-toggle" onclick="toggleSidebar()">
+                    <span>☰</span>
+                </button>
+                <div class="chat-user-info" id="chatUserInfo" onclick="openContactProfileModal()">
+                    <div class="chat-avatar">SA</div>
+                    <div class="chat-user-details">
+                        <h3>Sarah Anderson</h3>
+                        <p>Last seen 2 minutes ago</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="icon-btn" title="Voice Call">
+                        <span>📞</span>
+                    </button>
+                    <button class="icon-btn" title="Video Call">
+                        <span>📹</span>
+                    </button>
+                    <button class="icon-btn" title="More Options">
+                        <span>⋮</span>
+                    </button>
+                </div>
+            </div>
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will be populated here -->
+            </div>
+            <div class="message-input-container">
+                <div class="message-input-wrapper">
+                    <div class="input-actions">
+                        <button class="input-btn" onclick="toggleEmojiPicker()" title="Emoji">
+                            <span>😊</span>
+                        </button>
+                        <input type="file" class="file-input" id="fileInput" accept="image/*,video/*,.pdf,.doc,.docx" multiple>
+                        <button class="input-btn" onclick="document.getElementById('fileInput').click()" title="Attach File">
+                            <span>📎</span>
+                        </button>
+                    </div>
+                    <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <span>➤</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Emoji Picker -->
+            <div class="emoji-picker" id="emojiPicker">
+                <div class="emoji-grid" id="emojiGrid">
+                    <!-- Emojis will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Profile</h2>
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <form onsubmit="updateProfile(event)">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-input" id="profileName" value="John Doe">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <input type="text" class="form-input" id="profileStatus" value="Online">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">About</label>
+                    <textarea class="form-input" id="profileAbout" rows="3" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <div class="form-group" style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('profileModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Add Contact Modal -->
+    <div class="modal" id="addContactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Contact</h2>
+                <button class="close-btn" onclick="closeModal('addContactModal')">&times;</button>
+            </div>
+            <form onsubmit="addContact(event)">
+                <div class="form-group">
+                    <label class="form-label">Contact Name</label>
+                    <input type="text" class="form-input" id="contactName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone/Email</label>
+                    <input type="text" class="form-input" id="contactIdentifier" required>
+                </div>
+                <div class="form-group" style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addContactModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Contact Profile Modal -->
+    <div class="modal" id="contactProfileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Contact Info</h2>
+                <button class="close-btn" onclick="closeModal('contactProfileModal')">&times;</button>
+            </div>
+            <div class="contact-profile">
+                <div class="profile-avatar" id="contactProfileAvatar">SA</div>
+                <h3 class="profile-name" id="contactProfileName">Sarah Anderson</h3>
+                <p class="profile-status" id="contactProfileStatus">Last seen 2 minutes ago</p>
+                <div class="profile-actions">
+                    <button class="btn btn-primary">
+                        <span>📹</span> Video Call
+                    </button>
+                    <button class="btn btn-secondary">
+                        <span>🚫</span> Block
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Settings</h2>
+                <button class="close-btn" onclick="closeModal('settingsModal')">&times;</button>
+            </div>
+            <!-- Settings content omitted for brevity -->
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Application State
+        let currentUser = {
+            id: 'user1',
+            name: 'John Doe',
+            status: 'Online',
+            avatar: 'JD'
+        };
+        let contacts = [
+            { id: 'contact1', name: 'Sarah Anderson', avatar: 'SA', status: 'Last seen 2 minutes ago', lastMessage: 'Hey! How are you doing?', time: '2:30 PM', unread: 2, online: true },
+            { id: 'contact2', name: 'Mike Johnson', avatar: 'MJ', status: 'Online', lastMessage: 'Let\'s meet tomorrow', time: '1:15 PM', unread: 0, online: true },
+            { id: 'contact3', name: 'Emily Davis', avatar: 'ED', status: 'Last seen 1 hour ago', lastMessage: 'Thanks for the help! 👍', time: '12:45 PM', unread: 0, online: false },
+            { id: 'contact4', name: 'David Wilson', avatar: 'DW', status: 'Last seen yesterday', lastMessage: 'Great work on the project', time: 'Yesterday', unread: 1, online: false }
+        ];
+        let messages = {
+            'contact1': [
+                {
+                    id: 'msg1',
+                    senderId: 'contact1',
+                    content: 'Hey! How are you doing?',
+                    timestamp: new Date(),
+                    type: 'text'
+                },
+                {
+                    id: 'msg2',
+                    senderId: 'user1',
+                    content: 'I am good, thanks! How about you?',
+                    timestamp: new Date(),
+                    type: 'text'
+                }
+            ],
+            'contact2': [
+                {
+                    id: 'msg3',
+                    senderId: 'contact2',
+                    content: 'Let\'s meet tomorrow',
+                    timestamp: new Date(),
+                    type: 'text'
+                }
+            ],
+            'contact3': [
+                {
+                    id: 'msg4',
+                    senderId: 'contact3',
+                    content: 'Thanks for the help! 👍',
+                    timestamp: new Date(),
+                    type: 'text'
+                }
+            ],
+            'contact4': [
+                {
+                    id: 'msg5',
+                    senderId: 'contact4',
+                    content: 'Great work on the project',
+                    timestamp: new Date(),
+                    type: 'text'
+                }
+            ]
+        };
+        let activeContactId = 'contact1';
+        let isTyping = false;
+        let typingTimeout;
+        const commonEmojis = ['😀','😃','😄','😁','😊','😂','🤣','😍','🥰','😘','😗','😙','😚','🙂','🤗','🤔','😐','😑','😶','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','🥱','😴','😌','😛','😜','😝','🤤','😒','😓','😔','😕','🙃','🤑','😲','☹️','🙁','😖','😞','😟','😤','😢','😭','😦','😧','😨','😩','🤯','😬','😰','😱','🥵','🥶','😳','🤪','😵','🥴','😷','🤒','🤕','🤢','🤮','🤧','😇','🥳'];
+        let socket;
+        document.addEventListener('DOMContentLoaded', function() {
+            socket = io();
+            socket.emit('join', currentUser.id);
+            socket.on('receive_message', function(data) {
+                if (!messages[data.from]) messages[data.from] = [];
+                messages[data.from].push({
+                    id: 'msg' + Date.now(),
+                    senderId: data.from,
+                    content: data.content,
+                    timestamp: new Date(),
+                    type: data.type || 'text',
+                    filename: data.filename || null
+                });
+                loadMessages();
+                loadContacts();
+            });
+            socket.on('typing', function(data) {
+                if (activeContactId === data.from) {
+                    showTyping();
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(hideTyping, 1500);
+                }
+            });
+            loadContacts();
+            loadMessages();
+            populateEmojiPicker();
+            setupEventListeners();
+            checkDarkMode();
+        });
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            if (!content) {
+                messageInput.value = '';
+                messageInput.focus();
+                return;
+            }
+            const message = {
+                id: 'msg' + Date.now(),
+                senderId: currentUser.id,
+                content: content,
+                timestamp: new Date(),
+                type: 'text'
+            };
+            if (!messages[activeContactId]) messages[activeContactId] = [];
+            messages[activeContactId].push(message);
+            const contact = contacts.find(c => c.id === activeContactId);
+            if (contact) {
+                contact.lastMessage = content;
+                contact.time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            loadContacts();
+            loadMessages();
+            messageInput.value = '';
+            messageInput.focus();
+            socket.emit('send_message', {
+                from: currentUser.id,
+                to: activeContactId,
+                content: content,
+                type: 'text'
+            });
+        }
+        // Render messages with time
+        function loadMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '';
+            const contactMessages = messages[activeContactId] || [];
+            contactMessages.forEach(message => {
+                const div = document.createElement('div');
+                const isOwn = message.senderId === currentUser.id;
+                div.className = `message ${isOwn ? 'sent' : 'received'}`;
+                const time = message.timestamp instanceof Date ? message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                div.innerHTML = `
+                    <div class="message-content">
+                        ${message.content}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                messagesContainer.appendChild(div);
+            });
+            if (isTyping) {
+                const typingElement = document.createElement('div');
+                typingElement.className = 'typing-indicator';
+                typingElement.innerHTML = `
+                    <span>Typing</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                `;
+                messagesContainer.appendChild(typingElement);
+            }
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        // Contact profile modal on avatar click
+        function openContactProfileModal() {
+            const contact = contacts.find(c => c.id === activeContactId);
+            if (contact) {
+                document.getElementById('contactProfileAvatar').textContent = contact.avatar;
+                document.getElementById('contactProfileName').textContent = contact.name;
+                document.getElementById('contactProfileStatus').textContent = contact.status;
+            }
+            openModal('contactProfileModal');
+        }
+        // Add contact
+        function addContact(event) {
+            event.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const identifier = document.getElementById('contactIdentifier').value;
+            const newContact = {
+                id: 'contact' + Date.now(),
+                name: name,
+                avatar: name.split(' ').map(n => n[0]).join('').toUpperCase(),
+                status: 'Last seen recently',
+                lastMessage: 'No messages yet',
+                time: '',
+                unread: 0,
+                online: false
+            };
+            contacts.unshift(newContact);
+            messages[newContact.id] = [];
+            loadContacts();
+            setActiveContact(newContact.id);
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactIdentifier').value = '';
+            closeModal('addContactModal');
+        function loadContacts() {
+            const contactsList = document.getElementById('contactsList');
+            contactsList.innerHTML = '';
+            contacts.forEach(contact => {
+                const div = document.createElement('div');
+                div.className = `contact-item ${contact.id === activeContactId ? 'active' : ''}`;
+                div.onclick = () => setActiveContact(contact.id);
+                div.innerHTML = `
+                    <div class="contact-avatar">
+                        ${contact.avatar}
+                        ${contact.online ? '<div class="online-indicator"></div>' : ''}
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-name">${contact.name}</div>
+                        <div class="contact-last-message">${contact.lastMessage}</div>
+                    </div>
+                    <div class="contact-meta">
+                        <div class="message-time">${contact.time}</div>
+                        ${contact.unread > 0 ? `<div class="unread-badge">${contact.unread}</div>` : ''}
+                    </div>
+                `;
+                contactsList.appendChild(div);
+            });
+        }
+        }
+        // Switch between contacts
+        function setActiveContact(contactId) {
+            activeContactId = contactId;
+            // Highlight the selected contact
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const contactElements = document.querySelectorAll('.contact-item');
+            contacts.forEach((contact, idx) => {
+                if (contact.id === contactId) {
+                    contactElements[idx].classList.add('active');
+                }
+            });
+            // Update chat header
+            const contact = contacts.find(c => c.id === contactId);
+            const chatUserInfo = document.getElementById('chatUserInfo');
+            chatUserInfo.innerHTML = `
+                <div class="chat-avatar">${contact.avatar}</div>
+                <div class="chat-user-details">
+                    <h3>${contact.name}</h3>
+                    <p>${contact.status}</p>
+                </div>
+            `;
+            contact.unread = 0;
+            // Always show chat history for selected contact
+            if (!messages[contactId]) messages[contactId] = [];
+            loadMessages();
+        }
+        // Dark/light theme toggle
+        function toggleDarkMode() {
+            const toggle = document.getElementById('darkModeToggle');
+            const isDark = document.documentElement.hasAttribute('data-theme');
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                toggle.classList.remove('active');
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggle.classList.add('active');
+                localStorage.setItem('darkMode', 'true');
+            }
+        }
+        function checkDarkMode() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            const toggle = document.getElementById('darkModeToggle');
+            if (isDark) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                toggle.classList.add('active');
+            }
+        }
+        // Emoji picker
+        function populateEmojiPicker() {
+            const emojiGrid = document.getElementById('emojiGrid');
+            emojiGrid.innerHTML = '';
+            commonEmojis.forEach(emoji => {
+                const button = document.createElement('button');
+                button.className = 'emoji-btn';
+                button.textContent = emoji;
+                button.onclick = () => insertEmoji(emoji);
+                emojiGrid.appendChild(button);
+            });
+        }
+        function toggleEmojiPicker() {
+            const emojiPicker = document.getElementById('emojiPicker');
+            emojiPicker.classList.toggle('active');
+        }
+        function insertEmoji(emoji) {
+            const messageInput = document.getElementById('messageInput');
+            const cursorPos = messageInput.selectionStart;
+            const textBefore = messageInput.value.substring(0, cursorPos);
+            const textAfter = messageInput.value.substring(cursorPos);
+            messageInput.value = textBefore + emoji + textAfter;
+            messageInput.focus();
+            messageInput.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+            document.getElementById('emojiPicker').classList.remove('active');
+        }
+        // Modal helpers
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        function openProfileModal() {
+            openModal('profileModal');
+        }
+        function openAddContactModal() {
+            openModal('addContactModal');
+        }
+        function openSettingsModal() {
+            openModal('settingsModal');
+        }
+        // Event listeners
+        function setupEventListeners() {
+            // Prevent form submission if inside a form
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('messageInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    closeModal(e.target.id);
+                }
+            });
+            document.addEventListener('click', function(e) {
+                const emojiPicker = document.getElementById('emojiPicker');
+                const emojiBtn = e.target.closest('[onclick="toggleEmojiPicker()"]');
+                if (!emojiBtn && !emojiPicker.contains(e.target)) {
+                    emojiPicker.classList.remove('active');
+                }
+            });
+        }
+        function handleSearch(event) {
+            const query = event.target.value.toLowerCase();
+            const contactItems = document.querySelectorAll('.contact-item');
+            contactItems.forEach(item => {
+                const name = item.querySelector('.contact-name').textContent.toLowerCase();
+                const message = item.querySelector('.contact-last-message').textContent.toLowerCase();
+                if (name.includes(query) || message.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    socket.emit('send_file', {
+                        from: currentUser.id,
+                        to: activeContactId,
+                        filename: file.name,
+                        filedata: e.target.result,
+                        type: 'file'
+                    });
+                    const message = {
+                        id: 'msg' + Date.now(),
+                        senderId: currentUser.id,
+                        content: `<a href='${e.target.result}' download='${file.name}'>📎 ${file.name}</a>`,
+                        timestamp: new Date(),
+                        type: 'file',
+                        filename: file.name
+                    };
+                    if (!messages[activeContactId]) messages[activeContactId] = [];
+                    messages[activeContactId].push(message);
+                    const contact = contacts.find(c => c.id === activeContactId);
+                    if (contact) {
+                        contact.lastMessage = `📎 ${file.name}`;
+                        contact.time = 'Now';
+                    }
+                    loadContacts();
+                    loadMessages();
+                };
+                reader.readAsDataURL(file);
+            });
+            event.target.value = '';
+        }
+    </script>
+</body>
+</html>
