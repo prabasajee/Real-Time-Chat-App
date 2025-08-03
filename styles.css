@@ -127,7 +127,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
 .file-input { display: none; }
-@media (max-width: 768px) { .sidebar { width: 100%; position: absolute; left: -100%; z-index: 100; transition: left 0.3s ease; } .sidebar.mobile-open { left: 0; } .chat-area { width: 100%; } .message-content { max-width: 85%; } }
+@media (max-width: 768px) { .sidebar { width: 100%; position: absolute; left: -100%; z-index: 100; transition: left 0.3s ease; } .sidebar.mobile-open { left: 0; } .sidebar.mobile-hidden { left: -100%; } .chat-area { width: 100%; } .message-content { max-width: 85%; } }
 .mobile-toggle { display: none; }
 @media (max-width: 768px) { .mobile-toggle { display: flex; } }
 .contact-profile { text-align: center; padding: 20px 0; }
