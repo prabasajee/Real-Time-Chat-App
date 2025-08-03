@@ -218,8 +218,13 @@ class VoiceChatApp {
         try {
             // Create audio blob
             const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-            const audioUrl = URL.createObjectURL(audioBlob);
-            
+
+            // Upload audio blob to Firebase Storage
+            const storageRef = firebase.storage().ref();
+            const fileName = `voiceMessages/${this.currentUser.uid}_${Date.now()}.wav`;
+            const audioFileRef = storageRef.child(fileName);
+            await audioFileRef.put(audioBlob);
+            const audioUrl = await audioFileRef.getDownloadURL();
             // Calculate duration
             const duration = Math.floor((Date.now() - this.recordingStartTime) / 1000);
 
