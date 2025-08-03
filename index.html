@@ -19,9 +19,30 @@
       <div id="chat-box"></div>
 
       <form id="message-form">
-        <input type="text" id="message-input" placeholder="Type a message..." required />
-        <button type="submit">Send</button>
+        <input type="text" id="message-input" placeholder="Type a message..." />
+        <div class="voice-controls">
+          <button type="button" id="voice-record-btn" class="voice-record-btn" title="Record Voice Message">
+            🎤
+          </button>
+          <button type="submit">Send</button>
+        </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Recording Modal -->
+  <div id="recording-modal" class="recording-modal">
+    <div class="recording-content">
+      <h3>🎤 Recording Voice Message</h3>
+      <div id="recording-timer" class="recording-timer">00:00</div>
+      <div id="recording-waveform" class="recording-waveform">
+        <!-- Waveform bars will be generated here -->
+      </div>
+      <p>Speak now... AI transcription is active</p>
+      <div class="recording-actions">
+        <button type="button" id="cancel-recording" class="cancel-btn">Cancel</button>
+        <button type="button" id="send-voice" class="send-voice-btn">Send Voice</button>
+      </div>
     </div>
   </div>
 
