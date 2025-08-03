@@ -322,7 +322,7 @@ class VoiceChatApp {
 
         return `
             <div class="voice-message ${message.uid === this.currentUser.uid ? 'own' : 'other'}">
-                <button class="voice-play-btn" onclick="app.playVoiceMessage('${message.audioUrl}', this)">
+                <button class="voice-play-btn" data-audio-url="${message.audioUrl}">
                     ▶️
                 </button>
                 <div class="voice-waveform">${waveformBars}</div>
