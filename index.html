@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatFlow - Real-Time Messaging</title>
@@ -364,6 +363,8 @@
             document.getElementById('contactName').value = '';
             document.getElementById('contactIdentifier').value = '';
             closeModal('addContactModal');
+        }
+        
         function loadContacts() {
             const contactsList = document.getElementById('contactsList');
             contactsList.innerHTML = '';
@@ -388,7 +389,7 @@
                 contactsList.appendChild(div);
             });
         }
-        }
+        
         // Switch between contacts
         function setActiveContact(contactId) {
             activeContactId = contactId;
@@ -417,17 +418,52 @@
             if (!messages[contactId]) messages[contactId] = [];
             loadMessages();
         }
+        
+        // Missing function implementations
+        function showTyping() {
+            isTyping = true;
+            loadMessages();
+        }
+        
+        function hideTyping() {
+            isTyping = false;
+            loadMessages();
+        }
+        
+        function updateProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('profileName').value;
+            const status = document.getElementById('profileStatus').value;
+            const about = document.getElementById('profileAbout').value;
+            
+            // Update current user info
+            currentUser.name = name;
+            currentUser.status = status;
+            currentUser.about = about;
+            
+            // Update display
+            document.querySelector('.user-details h3').textContent = name;
+            document.querySelector('.user-details p').textContent = status;
+            
+            closeModal('profileModal');
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-hidden');
+        }
+        
         // Dark/light theme toggle
         function toggleDarkMode() {
             const toggle = document.getElementById('darkModeToggle');
             const isDark = document.documentElement.hasAttribute('data-theme');
             if (isDark) {
                 document.documentElement.removeAttribute('data-theme');
-                toggle.classList.remove('active');
+                if (toggle) toggle.classList.remove('active');
                 localStorage.setItem('darkMode', 'false');
             } else {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                toggle.classList.add('active');
+                if (toggle) toggle.classList.add('active');
                 localStorage.setItem('darkMode', 'true');
             }
         }
@@ -436,7 +472,7 @@
             const toggle = document.getElementById('darkModeToggle');
             if (isDark) {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                toggle.classList.add('active');
+                if (toggle) toggle.classList.add('active');
             }
         }
         // Emoji picker
