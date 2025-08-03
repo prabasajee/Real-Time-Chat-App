@@ -1,47 +1,40 @@
 // Firebase Configuration
 // SECURITY: Never commit real credentials to version control!
-// Use environment variables or a secure config file
+// This script safely loads configuration from secure sources
 
-const firebaseConfig = {
-    // Option 1: Use environment variables (recommended for production)
-    apiKey: process.env.FIREBASE_API_KEY || "demo-api-key-replace-with-real",
-    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "demo-project.firebaseapp.com",
-    projectId: process.env.FIREBASE_PROJECT_ID || "demo-project-id",
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "demo-project.appspot.com",
-    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "123456789",
-    appId: process.env.FIREBASE_APP_ID || "demo-app-id"
-    
-    // Option 2: For client-side apps, create a separate config.js file
-    // and add it to .gitignore - see instructions in README.md
-};
+// Load configuration using the secure config loader
+const firebaseConfig = ConfigLoader.loadFirebaseConfig();
 
-// Validate configuration before initializing
-function validateFirebaseConfig() {
-    const requiredFields = ['apiKey', 'authDomain', 'projectId'];
-    const missingFields = requiredFields.filter(field => 
-        !firebaseConfig[field] || firebaseConfig[field].startsWith('demo-')
-    );
-    
-    if (missingFields.length > 0) {
-        console.warn('⚠️ Firebase configuration incomplete!');
-        console.warn('Missing or demo values for:', missingFields);
-        console.warn('Please check README.md for setup instructions');
-        return false;
-    }
-    return true;
-}
+// Validate configuration
+const validation = ConfigLoader.validateConfig(firebaseConfig);
+ConfigLoader.displayConfigStatus(validation);
 
 // Initialize Firebase only if configuration is valid
-if (validateFirebaseConfig()) {
-    firebase.initializeApp(firebaseConfig);
-    console.log('✅ Firebase initialized successfully');
+if (validation.isValid) {
+    try {
+        firebase.initializeApp(firebaseConfig);
+        console.log('✅ Firebase initialized successfully');
+    } catch (error) {
+        console.error('❌ Firebase initialization failed:', error.message);
+    }
 } else {
-    console.error('❌ Firebase initialization failed - check configuration');
+    console.error('❌ Cannot initialize Firebase - configuration incomplete');
+    console.log('📖 Please check README.md for setup instructions');
 }
 
-// Initialize Firebase services
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+// Initialize Firebase services (with error handling)
+let auth, firestore, googleProvider;
 
-// Google Auth Provider
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+try {
+    auth = firebase.auth();
+    firestore = firebase.firestore();
+    googleProvider = new firebase.auth.GoogleAuthProvider();
+    
+    // Configure Google provider
+    googleProvider.setCustomParameters({
+        prompt: 'select_account'
+    });
+    
+} catch (error) {
+    console.error('❌ Failed to initialize Firebase services:', error.message);
+}

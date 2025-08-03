@@ -71,6 +71,22 @@ Your chat app now includes advanced voice messaging capabilities:
    }
    ```
 
+### 🔐 Security Best Practices:
+
+- ✅ **Credentials are protected** - Never commit real API keys
+- ✅ **Environment variables** - Use `.env` files for sensitive data
+- ✅ **Git ignored** - Config files automatically excluded
+- ✅ **Validation** - App checks for proper configuration
+- ✅ **Firestore rules** - Database secured with authentication
+- ✅ **Template files** - Easy setup without exposing secrets
+
+### ⚠️ Security Warnings:
+- Never commit `.env` or `firebase-config.js` files
+- Use different Firebase projects for development/production
+- Regularly rotate API keys
+- Enable Firebase security rules
+- Monitor usage in Firebase console
+
 ### How to Use:
 
 1. **Sign in** with Google
